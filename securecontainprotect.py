@@ -11,13 +11,29 @@ clock = pygame.time.Clock()
 
 clientNumber = 0
 
-def redraw_window(window: pygame.Surface, card: Card = None, deck = None, player = None):
+class LayerManager():
+    #Todo: Make a layer manager to control what objects appear over other objects.
+    ## In addition to bringing stuff to the top, the bottom should also be an option. For reasons ig.
+    def __init__(self):
+        self.layers = []
+
+    def bring_to_top(self):
+        pass
+
+    def bring_to_bottom(self):
+        pass
+
+#TODO: DUDE, why. Make a group of every sprite or surface in the game so this function doesn't get anymore parameters.
+# I'll do it later...
+def redraw_window(window: pygame.Surface, card: Card = None, deck = None, player = None, container:CardContainer = None):
     window.fill((100, 100, 255))
     if card != None:
         card.draw(window)
     if deck != None:
         for card in deck:
             card.draw(window)
+    if container != None:
+        container.draw(window)
     pygame.display.update()
 
 def main():
@@ -31,8 +47,9 @@ def main():
     fullscreen = True
     window = pygame.display.set_mode((width, height))
 
+    test_container = CardContainer(100, 100, 1, "temp2.png")
     deck = [Card("DEFAULT", i, 50, 50, "temporarycardsprite.png") for i in range(52)]
-    test_container = CardContainer(500, 500, 1)
+
     for card in deck:
         card.scale(20, 2)
     held_card_i = None
@@ -66,7 +83,7 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
                 
-        redraw_window(window, deck= deck)
+        redraw_window(window, deck= deck, container= test_container)
         clock.tick(60)
     pygame.quit()
     logger.info(f"Finished at time: {clock.get_time()}")

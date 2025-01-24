@@ -2,6 +2,7 @@ import pygame
 import logging
 import os
 from cards import Card
+logger = logging.getLogger(__name__)
 
 #TODO: Make a Card Container class to hold cards both internally and visually.
 class CardContainer(pygame.sprite.Sprite):
@@ -33,11 +34,20 @@ class CardContainer(pygame.sprite.Sprite):
             return card
         
     def contain_card(self, card: Card):
-        if len(self.__cards_contained < self.card_limit):
+        if type(card) != Card:
+            raise ValueError(f"Type: Card, was expected. Recieved: {type(card)}")
+        elif len(self.__cards_contained) < self.card_limit:
             card.get_internal_rect().topleft = (self.rect.topleft[0] + 1, self.rect.topleft[1] + 1)
-            self.__cards_contained[card.get_ID()]
+            self.__cards_contained[card.get_ID()] = card
         else:
-            raise ValueError(f"An incorrect value: {card} , {type(card)}, was inputted. Type: Card, was expected.")
+            print("Card Limit exceeded, input declined.")
+            
+    def draw(self, window: pygame.Surface):
+        window.blit(self.image, self.rect.topleft)
+
+    def update(self):
+        logger.info(f"Update Occured: {self.image}")
+        super().update()
 
 class PlayingField(pygame.sprite.Sprite):
     """The playing field consists of 3 notable areas:
