@@ -6,14 +6,16 @@ logger = logging.getLogger(__name__)
 clock = pygame.time.Clock()
 
 class Card(pygame.sprite.Sprite):
-    def __init__(self, name:str, x:int, y:int, image_name:str, tags:list[str] = ['card']):
-        super().__init__()
+    def __init__(self, name:str, id:int, x:int, y:int, image_name:str, tags:list[str] = ['card'], *groups):
+        super().__init__(*groups)
         image_path = os.path.join("assets", image_name)
         self.image = pygame.image.load(image_path)
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
         self.is_draggable = True
+        self.name = name
         self.__tags = tags
+        self.__id = id
         logger.info(f"Card Created: {self}; Image: {self.image}, {image_path}; Time: {clock.get_time()}")
 
     def get_pos(self):
@@ -24,11 +26,18 @@ class Card(pygame.sprite.Sprite):
         """
         return self.rect.topleft
 
-    def get_internal_rect(self):
+    def get_internal_rect(self)->pygame.Rect:
+        """Returns the internal rectangle of the image
+        Returns:
+            pygame.Rect: The image Rect
+        """
         return self.rect
 
     def get_tags(self):
         return self.__tags
+
+    def get_ID(self):
+        return self.__id
 
     def add_tag(self, tag:str):
         self.__tags.append(tag)
@@ -48,7 +57,7 @@ class Card(pygame.sprite.Sprite):
         super().update()
     
     def __str__(self):
-        return ""
+        return f"Name: {self.name}\nID: {self.__id}\nTags: {self.__tags}"
     
     def __repr__(self):
         return ""

@@ -3,6 +3,7 @@ import traceback
 import logging
 import pyautogui
 from cards import *
+from playingfield import *
 
 pygame.init()
 logger = logging.getLogger(__name__)
@@ -27,10 +28,11 @@ def main():
     info = pygame.display.Info()
     width, height = info.current_w, info.current_h
     pygame.display.set_caption("Client")
-    fullscreen = False
+    fullscreen = True
     window = pygame.display.set_mode((width, height))
 
-    deck = [Card("DEFAULT", 50, 50, "temporarycardsprite.png") for i in range(52)]
+    deck = [Card("DEFAULT", i, 50, 50, "temporarycardsprite.png") for i in range(52)]
+    test_container = CardContainer(500, 500, 1)
     for card in deck:
         card.scale(20, 2)
     held_card_i = None
@@ -57,6 +59,8 @@ def main():
 
             if event.type == pygame.MOUSEBUTTONUP: # Stop Dragging a card
                 if event.button == 1:
+                    if test_container.get_internal_rect().collidepoint(event.pos) and held_card_i != None:
+                        test_container.contain_card(deck[held_card_i])
                     held_card_i = None
 
             if event.type == pygame.QUIT:
