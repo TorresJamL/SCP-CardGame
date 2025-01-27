@@ -17,7 +17,7 @@ class LayerManager():
     def __init__(self):
         self.layers = []
 
-    def bring_to_top(self):
+    def bring_to_top(self, layer):
         pass
 
     def bring_to_bottom(self):

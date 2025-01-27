@@ -1,37 +1,19 @@
 import pygame
 import logging
 import os
+from sprites import *
 logger = logging.getLogger(__name__)
 
 clock = pygame.time.Clock()
 
-class Card(pygame.sprite.Sprite):
+class Card(Sprite):
     def __init__(self, name:str, id:int, x:int, y:int, image_name:str, tags:list[str] = ['card'], *groups):
-        super().__init__(*groups)
-        image_path = os.path.join("assets", image_name)
-        self.image = pygame.image.load(image_path)
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
+        super().__init__(x, y, image_name, *groups)
         self.is_draggable = True
         self.name = name
         self.__tags = tags
         self.__id = id
-        logger.info(f"Card Created: {self}; Image: {self.image}, {image_path}; Time: {clock.get_time()}")
-
-    def get_pos(self):
-        """Returns the coords of the top left of the internal rectangle.
-
-        Returns:
-            Tuple[int, int]: A tuple containing the x and y
-        """
-        return self.rect.topleft
-
-    def get_internal_rect(self)->pygame.Rect:
-        """Returns the internal rectangle of the image
-        Returns:
-            pygame.Rect: The image Rect
-        """
-        return self.rect
+        logger.info(f"Card Created: {self}; Image: {self.image}, {self.image_path}; Time: {clock.get_time()}")
 
     def get_tags(self):
         return self.__tags
@@ -49,13 +31,6 @@ class Card(pygame.sprite.Sprite):
     def scale(self, scale_x:float, scale_y:float):
         pygame.transform.scale(self.image, (scale_x, scale_y))
 
-    def draw(self, window: pygame.Surface):
-        window.blit(self.image, self.rect.topleft)
-
-    def update(self):
-        logger.info(f"Update Occured: {self.image}")
-        super().update()
-    
     def __str__(self):
         return f"Name: {self.name}\nID: {self.__id}\nTags: {self.__tags}"
     
