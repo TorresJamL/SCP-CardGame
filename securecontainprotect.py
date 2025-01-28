@@ -11,20 +11,11 @@ clock = pygame.time.Clock()
 
 clientNumber = 0
 
-class LayerManager():
-    #Todo: Make a layer manager to control what objects appear over other objects.
-    ## In addition to bringing stuff to the top, the bottom should also be an option. For reasons ig.
-    def __init__(self):
-        self.layers = []
-
-    def bring_to_top(self, layer):
-        pass
-
-    def bring_to_bottom(self):
-        pass
-
 #TODO: DUDE, why. Make a group of every sprite or surface in the game so this function doesn't get anymore parameters.
 # I'll do it later...
+# Okay
+# ...
+# Nah
 def redraw_window(window: pygame.Surface, card: Card = None, deck = None, player = None, container:CardContainer = None):
     window.fill((100, 100, 255))
     if card != None:
@@ -39,14 +30,15 @@ def redraw_window(window: pygame.Surface, card: Card = None, deck = None, player
 def main():
     logging.basicConfig(filename='scpgame.log', level=logging.INFO)
     logger.info("Started...")
-    running = True
 
+    running = True
     info = pygame.display.Info()
     width, height = info.current_w, info.current_h
     pygame.display.set_caption("Client")
     fullscreen = True
     window = pygame.display.set_mode((width, height))
 
+    layer_manager = pygame.sprite.LayeredUpdates()
     test_container = CardContainer(100, 100, 1, "temp2.png")
     deck = [Card("DEFAULT", i, 50, 50, "temporarycardsprite.png") for i in range(52)]
 

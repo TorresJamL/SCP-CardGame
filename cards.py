@@ -5,7 +5,7 @@ from sprites import *
 logger = logging.getLogger(__name__)
 
 clock = pygame.time.Clock()
-
+### TODO: Make a function that takes a pygame event as input and fulfills the same purpose as the code block in main.
 class Card(Sprite):
     def __init__(self, name:str, id:int, x:int, y:int, image_name:str, tags:list[str] = ['card'], *groups):
         super().__init__(x, y, image_name, *groups)
