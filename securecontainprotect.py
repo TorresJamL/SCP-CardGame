@@ -16,15 +16,17 @@ clientNumber = 0
 # Okay
 # ...
 # Nah
-def redraw_window(window: pygame.Surface, card: Card = None, deck = None, player = None, container:CardContainer = None):
+# What if... and hear me out... I did it later.
+def redraw_window(window:pygame.Surface, layer_manager:pygame.sprite.LayeredUpdates):
     window.fill((100, 100, 255))
-    if card != None:
-        card.draw(window)
-    if deck != None:
-        for card in deck:
-            card.draw(window)
-    if container != None:
-        container.draw(window)
+    layer_manager.draw(window)
+    # if card != None:
+    #     card.draw(window)
+    # if deck != None:
+    #     for card in deck:
+    #         card.draw(window)
+    # if container != None:
+    #     container.draw(window)
     pygame.display.update()
 
 def main():
@@ -38,13 +40,15 @@ def main():
     fullscreen = True
     window = pygame.display.set_mode((width, height))
 
+    # On an object being clicked, it should be forced to the top of the layer manager.
     layer_manager = pygame.sprite.LayeredUpdates()
     test_container = CardContainer(100, 100, 1, "temp2.png")
-    deck = [Card("DEFAULT", i, 50, 50, "temporarycardsprite.png") for i in range(52)]
-
-    for card in deck:
-        card.scale(20, 2)
+    #deck = [Card("DEFAULT", i, 50, 50, "temporarycardsprite.png") for i in range(52)]
     held_card_i = None
+
+    layer_manager.add(test_container)
+    for i in range(52):
+        layer_manager.add(Card("Default", i, 50, 50, "temporarycardsprite.png"))
 
     while running:
         for event in pygame.event.get():
@@ -58,24 +62,28 @@ def main():
 
             if event.type == pygame.MOUSEBUTTONDOWN: # Start dragging a card
                 if event.button == 1:
-                    for num, obj in enumerate(deck):
-                        if obj.get_internal_rect().collidepoint(event.pos) and obj.is_draggable:
-                            held_card_i = num
+                    for num, obj in enumerate(layer_manager):
+                        try:
+                            if obj.get_internal_rect().collidepoint(event.pos) and obj.is_draggable:
+                                held_card_i = num
+                        except Exception as error:
+                            logger.error("Error exception at LN: 70: ", error, exc_info=True)
 
             if event.type == pygame.MOUSEMOTION: # Drag the currently held card
                 if held_card_i != None:
-                    deck[held_card_i].get_internal_rect().move_ip(event.rel)
-
+                    layer_manager.get_sprite(held_card_i).get_internal_rect().move_ip(event.rel)
+                    
             if event.type == pygame.MOUSEBUTTONUP: # Stop Dragging a card
                 if event.button == 1:
                     if test_container.get_internal_rect().collidepoint(event.pos) and held_card_i != None:
-                        test_container.contain_card(deck[held_card_i])
+                        test_container.contain_card(layer_manager.get_sprite(held_card_i))
+                        layer_manager.move_to_front(layer_manager.get_sprite(held_card_i))
                     held_card_i = None
 
             if event.type == pygame.QUIT:
                 running = False
                 
-        redraw_window(window, deck= deck, container= test_container)
+        redraw_window(window, layer_manager)
         clock.tick(60)
     pygame.quit()
     logger.info(f"Finished at time: {clock.get_time()}")
