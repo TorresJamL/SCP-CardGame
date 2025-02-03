@@ -10,7 +10,7 @@ class CardContainer(Sprite):
     """
     Container for cards to lock into when placed. 
     """
-    def __init__(self, x:int, y:int, card_limit:int, image_name:str = "temp2.png", *groups):
+    def __init__(self, x:int, y:int, card_limit:int, image_name:str = "tempcontainer.png", *groups):
         super().__init__(x, y, image_name, *groups)
         self.card_limit = card_limit
         self.__cards_contained = {}
@@ -31,7 +31,7 @@ class CardContainer(Sprite):
         if type(card) != Card:
             raise ValueError(f"Type: Card, was expected. Recieved: {type(card)}")
         elif len(self.__cards_contained) < self.card_limit:
-            card.get_internal_rect().topleft = (self.rect.topleft[0] + 1, self.rect.topleft[1] + 1)
+            card.get_internal_rect().topleft = (self.rect.topleft[0], self.rect.topleft[1])
             self.__cards_contained[card.get_ID()] = card
         else:
             print("Card Limit exceeded, input declined.")
